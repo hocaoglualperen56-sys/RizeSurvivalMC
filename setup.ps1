@@ -1,37 +1,28 @@
 # RizeSurvivalMC Windows installer
 $ErrorActionPreference = "Stop"
-$Root = Split-Path -Parent $MyInvocation.MyCommand.Path
-Set-Location $Root
-
+Set-Location (Split-Path -Parent $MyInvocation.MyCommand.Path)
 $java = (& java -version 2>&1 | Select-Object -First 1)
-if (-not $java) { throw "Java bulunamadi. Java 25 veya ustunu kurup PATH'e ekle: https://adoptium.net/" }
-if ($java -notmatch '"(\d+)') { throw "Java surumu okunamadi: $java" }
-$major = [int]$Matches[1]
-if ($major -lt 25) { throw "Paper 26.1+ icin Java 25+ gerekli. Bulunan Java: $major" }
-
-function Download-File($Url, $OutFile) {
-  Write-Host "Indiriliyor: $OutFile"
-  Invoke-WebRequest -Uri $Url -OutFile $OutFile
+if (-not $java -or $java -notmatch '"(\d+)' -or [int]$Matches[1] -lt 25) { throw "Java 25+ gerekli: https://adoptium.net/" }
+function Get-Download($url,$path) { Write-Host "Indiriliyor: $path"; Invoke-WebRequest -Uri $url -OutFile $path }
+$meta = Invoke-RestMethod "https://api.papermc.io/v2/projects/paper"
+$mc = $meta.versions[-1]
+$builds = Invoke-RestMethod "https://api.papermc.io/v2/projects/paper/versions/$mc/builds"
+$b = $builds.builds | Where-Object { $_.channel -eq "default" } | Select-Object -Last 1
+if (-not (Test-Path "paper.jar")) { Get-Download "https://api.papermc.io/v2/projects/paper/versions/$mc/builds/$($b.build)/downloads/$($b.downloads.application.name)" "paper.jar" }
+New-Item -ItemType Directory -Force plugins | Out-Null
+Get-Download "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot" "plugins/Geyser-Spigot.jar"
+Get-Download "https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot" "plugins/floodgate-spigot.jar"
+$loader = [uri]::EscapeDataString('["paper"]')
+$game = [uri]::EscapeDataString('["' + $mc + '"]')
+foreach ($slug in @("luckperms","essentialsx","vault","coreprotect","griefprevention","worldedit","worldguard","chunky","spark")) {
+  try {
+    $versions = Invoke-RestMethod "https://api.modrinth.com/v2/project/$slug/version?loaders=$loader&game_versions=$game"
+    $v = $versions | Select-Object -First 1
+    if (-not $v) { Write-Warning "$slug icin $mc uyumlu surum bulunamadi."; continue }
+    $f = $v.files | Where-Object { $_.primary } | Select-Object -First 1
+    if (-not $f) { $f = $v.files | Select-Object -First 1 }
+    Get-Download $f.url ("plugins/" + $f.filename)
+  } catch { Write-Warning "$slug indirilemedi: $($_.Exception.Message)" }
 }
-
-# Latest stable Paper release/build from the official PaperMC API
-$project = Invoke-RestMethod "https://api.papermc.io/v2/projects/paper"
-$version = $project.versions[-1]
-$builds = Invoke-RestMethod "https://api.papermc.io/v2/projects/paper/versions/$version/builds"
-$build = $builds.builds | Where-Object { $_.channel -eq "default" } | Select-Object -Last 1
-if (-not $build) { throw "Paper icin kararlı build bulunamadi." }
-$paperUrl = "https://api.papermc.io/v2/projects/paper/versions/$version/builds/$($build.build)/downloads/$($build.downloads.application.name)"
-if (-not (Test-Path "paper.jar")) { Download-File $paperUrl "paper.jar" } else { Write-Host "paper.jar zaten var; tekrar indirilmedi." }
-
-New-Item -ItemType Directory -Force -Path "plugins" | Out-Null
-$geyser = "https://download.geysermc.org/v2/projects/geyser/versions/latest/builds/latest/downloads/spigot"
-$floodgate = "https://download.geysermc.org/v2/projects/floodgate/versions/latest/builds/latest/downloads/spigot"
-Download-File $geyser "plugins/Geyser-Spigot.jar"
-Download-File $floodgate "plugins/floodgate-spigot.jar"
-
-if (-not (Test-Path "server.properties")) {
-  Copy-Item "server.properties.example" "server.properties"
-}
-Write-Host ""
-Write-Host "Kurulum tamamlandi. start.bat dosyasini calistir."
-Write-Host "Ilk acilista eula.txt olusacak. EULA'yi okuyup kabul edersen eula=true yap."
+if (-not (Test-Path "server.properties")) { Copy-Item "server.properties.example" "server.properties" }
+Write-Host "Kurulum tamamlandi. plugins klasorunu kontrol et; start.bat ile baslat."
