@@ -1,0 +1,20 @@
+# Copy this file to server.properties and adjust as needed.
+motd=\u00A7bRizeSurvivalMC \u00A77| \u00A7aSurvival
+server-port=25565
+server-ip=
+online-mode=true
+enforce-secure-profile=true
+enable-status=true
+max-players=50
+gamemode=survival
+force-gamemode=false
+difficulty=normal
+hardcore=false
+pvp=true
+spawn-protection=16
+view-distance=8
+simulation-distance=6
+white-list=false
+allow-flight=false
+enable-command-block=false
+enable-rcon=false
