@@ -1,0 +1,74 @@
+title: '&8RizeSurvivalMC &7| &bAna Menü'
+type: 'inventory'
+command: 'menu'
+rows: 3
+update-interval: 0
+inventory-lock: true
+layout:
+  fill:
+    - 'filler'
+  10:
+    - 'spawn'
+  12:
+    - 'survival'
+  14:
+    - 'economy'
+  16:
+    - 'help'
+  22:
+    - 'close'
+items:
+  filler:
+    material: 'BLACK_STAINED_GLASS_PANE'
+    name: ' '
+  spawn:
+    material: 'COMPASS'
+    name: '&a&lSPAWN'
+    lore:
+      - '&7Başlangıç alanına dön.'
+      - '&eTıklamak için seç.'
+    left-click:
+      commands:
+        - '[player] spawn'
+        - '[close]'
+  survival:
+    material: 'GRASS_BLOCK'
+    name: '&2&lSURVIVAL'
+    lore:
+      - '&7Hayatta kal, keşfet ve'
+      - '&7kendi üssünü kur.'
+      - '&eTıklayarak spawn noktasına git.'
+    left-click:
+      commands:
+        - '[player] spawn'
+        - '[close]'
+  economy:
+    material: 'GOLD_INGOT'
+    name: '&6&lEKONOMİ'
+    lore:
+      - '&7Bakiyeni görüntüle.'
+      - '&eTıklamak için seç.'
+    left-click:
+      commands:
+        - '[player] balance'
+        - '[close]'
+  help:
+    material: 'BOOK'
+    name: '&b&lYARDIM'
+    lore:
+      - '&7Temel komutları öğren.'
+      - '&f/menu &7- Ana menü'
+      - '&f/spawn &7- Başlangıç'
+      - '&f/sethome &7- Ev belirle'
+      - '&f/home &7- Evine dön'
+      - '&f/tpa oyuncu &7- Işınlanma isteği'
+    left-click:
+      commands:
+        - '[msg] &bRizeSurvivalMC &8» &7Komutlar: /spawn, /sethome, /home, /tpa, /balance, /menu'
+        - '[close]'
+  close:
+    material: 'BARRIER'
+    name: '&c&lKAPAT'
+    left-click:
+      commands:
+        - '[close]'
