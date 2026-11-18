@@ -1,0 +1,19 @@
+# Generated server files
+/cache/
+/libraries/
+/versions/
+/plugins/
+logs/
+crash-reports/
+world/
+world_nether/
+world_the_end/
+*.log
+*.jar
+eula.txt
+server.properties
+ops.json
+whitelist.json
+banned-players.json
+banned-ips.json
+usercache.json
