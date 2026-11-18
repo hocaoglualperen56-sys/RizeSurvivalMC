@@ -62,3 +62,17 @@ Kurulum betikleri Modrinth API üzerinden sunucunun Minecraft sürümüyle uyuml
 - Geyser: https://geysermc.org/wiki/geyser/
 - Floodgate: https://geysermc.org/wiki/floodgate/
 - Modrinth API: https://docs.modrinth.com/api/
+
+
+## Başlangıç menüsü ve NPC'ler
+- Ana menü YAML dosyası: configs/CommandPanels/panels/menu.yml
+- Kurulum betikleri menüyü plugins/CommandPanels/panels/menu.yml konumuna kopyalar.
+- Oyuncular /menu komutuyla ana menüyü açabilir.
+- CommandPanels, menüyü Java ve Floodgate üzerinden Bedrock oyuncularına uygun biçimde yönlendirecek Floodgate panel özelliğine sahiptir; bu projedeki ilk menü klasik envanter GUI'sidir. Bedrock istemcilerinde görsel uyumu ayrıca test et.
+- FancyNpcs ile skinli NPC'ler kurulur. Oyuncunun bulunduğu spawn noktasında NPC oluşturmak için NPC_SETUP.md dosyasındaki komutları oyunda OP olarak uygula.
+- Örnek NPC skinleri: Notch, jeb_ ve Steve. İsimleri istersen kendi seçtiğin Minecraft oyuncu adlarıyla değiştirebilirsin.
+- İlk kurulumda /setspawn komutuyla spawn noktasını belirle.
+
+## İlave eklentiler
+CommandPanels: ana menü ve GUI panelleri.
+FancyNpcs: skin, isim ve tıklama etkileşimli NPC'ler.
